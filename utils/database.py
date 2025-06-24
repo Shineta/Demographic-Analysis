@@ -12,17 +12,20 @@ from sqlalchemy.dialects.postgresql import JSON
 # Get database URL from environment
 DATABASE_URL = os.getenv('DATABASE_URL')
 
-# Create engine with SSL configuration for Replit
-if DATABASE_URL:
-    # Add SSL configuration for Replit's database
+def create_db_connection():
+    """Create a SQLAlchemy engine and session factory."""
+    if not DATABASE_URL:
+        return None, None
+
     engine = create_engine(
         DATABASE_URL,
         connect_args={"sslmode": "require"} if DATABASE_URL.startswith('postgresql') else {}
     )
-else:
-    engine = None
+    session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    return engine, session_local
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) if engine else None
+
+engine, SessionLocal = create_db_connection()
 Base = declarative_base()
 
 class Dataset(Base):

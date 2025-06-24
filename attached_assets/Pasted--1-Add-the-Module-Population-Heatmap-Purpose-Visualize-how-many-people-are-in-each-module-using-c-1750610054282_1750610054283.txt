@@ -1,0 +1,83 @@
+✅ 1. Add the Module Population Heatmap
+Purpose: Visualize how many people are in each module using color intensity (e.g., red = low, green = high).
+
+a. Data Preparation (JavaScript)
+Make sure each module has a total count:
+
+js
+Copy
+Edit
+// Assuming you have already grouped your data by 'EntityDesc'
+const moduleCounts = data.reduce((acc, row) => {
+  const module = row.EntityDesc;
+  acc[module] = (acc[module] || 0) + 1;
+  return acc;
+}, {});
+b. Normalize for heatmap coloring
+js
+Copy
+Edit
+const counts = Object.values(moduleCounts);
+const min = Math.min(...counts);
+const max = Math.max(...counts);
+
+const normalized = Object.fromEntries(
+  Object.entries(moduleCounts).map(([mod, count]) => [
+    mod,
+    (count - min) / (max - min),
+  ])
+);
+✅ 2. Render with a Heatmap Chart (Using Plotly.js or Chart.js Heatmap Plugin)
+Here’s a simplified Plotly.js version:
+
+js
+Copy
+Edit
+import Plot from 'react-plotly.js';
+
+<Plot
+  data={[
+    {
+      z: [Object.values(moduleCounts)],
+      x: Object.keys(moduleCounts),
+      y: ['Module Population'],
+      type: 'heatmap',
+      colorscale: 'YlOrRd', // Yellow to Red
+    },
+  ]}
+  layout={{
+    title: 'Module Population Heatmap',
+    height: 250,
+    margin: { t: 50, l: 100 },
+    xaxis: { tickangle: -45 },
+  }}
+/>
+✅ 3. Position in the Layout
+Add this heatmap directly beneath the current "Module Population Bar Chart" for easy comparison, or next to it in a responsive grid:
+
+jsx
+Copy
+Edit
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <ModulePopulationBarChart data={moduleCounts} />
+  <ModulePopulationHeatmap data={moduleCounts} />
+</div>
+✅ 4. Optional: Add to PDF/CSV Exports
+If you’re exporting via jspdf or html2canvas:
+
+js
+Copy
+Edit
+html2canvas(document.querySelector('#population-heatmap')).then(canvas => {
+  const imgData = canvas.toDataURL('image/png');
+  const pdf = new jsPDF();
+  pdf.addImage(imgData, 'PNG', 10, 10);
+  pdf.save('population_heatmap.pdf');
+});
+✅ 5. Summary
+Feature	Implemented?	Notes
+✅ Demographic Heatmap	Yes	Already in dashboard
+✅ Module Bar Chart	Yes	Already working
+🔲 Module Heatmap	Add now	Use Plotly.js or Chart.js Heatmap
+🔲 Export with Heatmap	Optional	Enable html2canvas or Plotly.toImage()
+

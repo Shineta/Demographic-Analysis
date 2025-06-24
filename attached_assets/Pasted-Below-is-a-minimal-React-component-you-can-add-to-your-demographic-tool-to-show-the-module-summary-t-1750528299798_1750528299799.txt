@@ -1,0 +1,87 @@
+Below is a minimal React component you can add to your demographic tool to show the module summary table, using data grouped by EntityDesc:
+
+jsx
+Copy
+Edit
+import React from 'react';
+
+const ModuleSummaryTable = ({ data }) => {
+  // Grouping by EntityDesc
+  const groupedModules = data.reduce((acc, row) => {
+    const key = row.EntityDesc;
+    const grade = row.Grade;
+    const component = row["Component Desc"];
+    const total = parseInt(row.TOTAL || 0);
+
+    if (!acc[key]) {
+      acc[key] = {
+        module: key,
+        grade,
+        component,
+        totalPeople: total,
+      };
+    } else {
+      acc[key].totalPeople += total;
+    }
+
+    return acc;
+  }, {});
+
+  const summaryList = Object.values(groupedModules);
+
+  return (
+    <div className="mt-10">
+      <h2 className="text-xl font-bold mb-2">📊 Module Summary Table</h2>
+      <table className="min-w-full table-auto border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border px-4 py-2">Module</th>
+            <th className="border px-4 py-2">Grade</th>
+            <th className="border px-4 py-2">Component</th>
+            <th className="border px-4 py-2">Total People</th>
+          </tr>
+        </thead>
+        <tbody>
+          {summaryList.map((mod, idx) => (
+            <tr key={idx}>
+              <td className="border px-4 py-1">{mod.module}</td>
+              <td className="border px-4 py-1">{mod.grade}</td>
+              <td className="border px-4 py-1">{mod.component}</td>
+              <td className="border px-4 py-1 text-right">{mod.totalPeople}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default ModuleSummaryTable;
+Usage in Parent:
+
+jsx
+Copy
+Edit
+<ModuleSummaryTable data={parsedExcelData} />
+Ensure parsedExcelData is your row array after processing the uploaded Excel file.
+
+📤 Sample Exported Output (CSV Format)
+Module	Grade	Component	Total People
+Lesson, Ant’s Grand Feast	Gr. 1	Read and Respond	186
+Lesson, Rosa Parks: My Story	Gr. 4	Read and Respond	202
+Lesson, MLK’s Dream	Gr. 3	Read and Respond	174
+Lesson, Harriet Tubman	Gr. 5	Read and Respond	221
+
+Save as module_summary.csv using:
+
+js
+Copy
+Edit
+import { utils, writeFile } from 'xlsx';
+
+const exportModuleSummary = (summaryList) => {
+  const worksheet = utils.json_to_sheet(summaryList);
+  const workbook = utils.book_new();
+  utils.book_append_sheet(workbook, worksheet, "Module Summary");
+  writeFile(workbook, "module_summary.xlsx");
+};

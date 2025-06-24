@@ -1,0 +1,82 @@
+🛠️ Prompt to Update Demographic Analysis Tool
+Objective:
+Enhance the Demographic Analysis Tool to fully meet stakeholder expectations by adding a Module Summary Table, improving heat map clarity, and enabling data export features for presentation and reporting.
+
+✅ Key Updates to Implement
+1. 📊 Add a Module Summary Table
+Add a new section below the heat map or on a separate tab.
+
+Group by the EntityDesc column to define each module.
+
+Sum the TOTAL column to get the total number of people represented per module.
+
+Display the following columns:
+
+Module (EntityDesc)	Grade	Component	Total People
+
+Ensure this table updates dynamically based on filters (e.g., Grade, Component).
+
+2. 🌡️ Enhance the Demographic Heat Map
+Add clear axis labels:
+
+Y-axis = Module (EntityDesc)
+
+X-axis = Demographic categories (e.g., AAM, AAF, PCM, LGBTF, etc.)
+
+Add hover tooltips with:
+
+Actual %
+
+Target %
+
+Raw count
+
+Add a legend explaining the color scale (e.g., Red = Below Target, Green = On/Over Target)
+
+3. 🧠 Improve Data Filters
+Ensure filters (Grade, Component, EntityDesc) affect:
+
+Heat map
+
+Gap analysis table
+
+Module summary table
+
+4. 📥 Enable Export Options
+Add export buttons to allow users to download:
+
+Heat Map as PNG or PDF
+
+Module Summary Table as CSV or XLSX
+
+Demographic Gap Table as PDF or XLSX
+
+5. 🎓 Add Help/Tooltip Guidance
+Add inline tooltips or a help icon with the following info:
+
+How modules are defined (by EntityDesc)
+
+What the color coding on the heat map means
+
+How “on target” is calculated
+
+6. 🗂️ Example Datasets (if needed)
+Ensure that test datasets like the one titled:
+Into Reading Read and Respond – All Grades – Selection_Full Data_data 20250618.xlsx
+are compatible and preloaded for validation.
+
+💻 Suggested Component Integration (Optional)
+Create a new component: ModuleSummaryTable.jsx
+
+Modify the existing heat map component to accept dynamic labels and tooltips
+
+Add a utils/export.js file for reusable export logic using xlsx and html2canvas
+
+🧪 Testing Instructions
+Upload the "Read and Respond" report
+
+Apply filters (e.g., Gr. 2, Component: Read and Respond)
+
+Verify that the summary table appears with correct totals
+
+Export all outputs and verify content matches what’s displayed

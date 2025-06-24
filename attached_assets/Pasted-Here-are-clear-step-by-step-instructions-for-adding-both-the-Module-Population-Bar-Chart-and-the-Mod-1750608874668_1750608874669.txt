@@ -1,0 +1,141 @@
+Here are clear step-by-step instructions for adding both the Module Population Bar Chart and the Module Population Heat Map to your Demographic Analysis Tool.
+
+✅ Feature 1: Module Population Bar Chart
+🎯 Goal:
+Show total people (Spec Count) per module (EntityDesc) as a horizontal bar chart.
+
+🛠 Steps to Add It:
+1. 📦 Install Recharts (if not already installed):
+bash
+Copy
+Edit
+npm install recharts
+2. 📊 Create a New React Component
+jsx
+Copy
+Edit
+// ModulePopulationChart.jsx
+import React from 'react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+
+const ModulePopulationChart = ({ data }) => {
+  const moduleCounts = data.reduce((acc, row) => {
+    const mod = row.EntityDesc;
+    const count = Number(row["Spec Count"] || 0);
+    acc[mod] = (acc[mod] || 0) + count;
+    return acc;
+  }, {});
+
+  const chartData = Object.entries(moduleCounts).map(([name, value]) => ({ name, value }));
+
+  return (
+    <div className="mt-10">
+      <h2 className="text-lg font-bold mb-2">📊 Module Population Chart</h2>
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart layout="vertical" data={chartData}>
+          <XAxis type="number" label={{ value: 'Total People', position: 'insideBottom', offset: -5 }} />
+          <YAxis dataKey="name" type="category" width={250} />
+          <Tooltip />
+          <Bar dataKey="value" fill="#3b82f6" />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
+export default ModulePopulationChart;
+3. 🧩 Import and Add in Parent Component
+jsx
+Copy
+Edit
+import ModulePopulationChart from './ModulePopulationChart';
+
+<ModulePopulationChart data={filteredData} />
+✅ Feature 2: Module Population Heat Map
+🎯 Goal:
+Color-code modules based on how many people they represent (like a heat score).
+
+🛠 Steps to Add It:
+1. 📊 Create a Heat Map Table Component
+jsx
+Copy
+Edit
+// ModulePopulationHeatMap.jsx
+import React from 'react';
+
+const getHeatColor = (count) => {
+  if (count > 100) return '#22c55e'; // green
+  if (count > 20) return '#f59e0b';  // yellow
+  return '#ef4444';                  // red
+};
+
+const ModulePopulationHeatMap = ({ data }) => {
+  const grouped = data.reduce((acc, row) => {
+    const mod = row.EntityDesc;
+    const count = Number(row["Spec Count"] || 0);
+    acc[mod] = (acc[mod] || 0) + count;
+    return acc;
+  }, {});
+
+  const chartData = Object.entries(grouped).map(([name, value]) => ({ name, value }));
+
+  return (
+    <div className="mt-10">
+      <h2 className="text-lg font-bold mb-2">🔥 Module Population Heat Map</h2>
+      <table className="min-w-full table-auto border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border px-4 py-2">Module</th>
+            <th className="border px-4 py-2 text-right">Total People</th>
+          </tr>
+        </thead>
+        <tbody>
+          {chartData.map(({ name, value }, i) => (
+            <tr key={i} style={{ backgroundColor: getHeatColor(value) }}>
+              <td className="border px-4 py-1 text-white font-semibold">{name}</td>
+              <td className="border px-4 py-1 text-right text-white">{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default ModulePopulationHeatMap;
+2. 🧩 Add to Parent
+jsx
+Copy
+Edit
+import ModulePopulationHeatMap from './ModulePopulationHeatMap';
+
+<ModulePopulationHeatMap data={filteredData} />
+✅ Placement Instructions
+Place both components:
+
+Below the demographic heat map
+
+Above the summary and pie charts
+
+Example:
+
+jsx
+Copy
+Edit
+<DemographicHeatMap data={filteredData} />
+<ModulePopulationChart data={filteredData} />
+<ModulePopulationHeatMap data={filteredData} />
+<ModuleSummaryTable data={filteredData} />
+🧪 Bonus: Toggle View Option (Optional)
+Let users choose:
+
+jsx
+Copy
+Edit
+<select onChange={setViewMode}>
+  <option value="bar">Bar Chart</option>
+  <option value="heat">Heat Map</option>
+</select>
+
+{viewMode === 'bar' && <ModulePopulationChart data={filteredData} />}
+{viewMode === 'heat' && <ModulePopulationHeatMap data={filteredData} />}

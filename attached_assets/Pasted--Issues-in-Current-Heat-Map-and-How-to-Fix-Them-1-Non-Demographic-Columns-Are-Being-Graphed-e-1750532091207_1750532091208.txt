@@ -1,0 +1,114 @@
+🛠️ Issues in Current Heat Map and How to Fix Them
+1. ❗ Non-Demographic Columns Are Being Graphed (e.g., "Page Folio")
+Issue:
+
+Your heat map includes irrelevant columns like Page Folio, which are not demographic data.
+
+This inflates the chart with incorrect values (e.g., +3690%).
+
+Fix:
+
+Add a column whitelist or filter to include only approved demographic fields like:
+
+African American, Asian, Caucasian, Female, Hispanic, LGBT, Legacy, Male, Native American, Other, Pacific Islander, Physically Challenged
+
+Alternatively, allow admins to select or confirm demographic columns during file upload.
+
+2. ❗ Default Target % Is Hardcoded at 10% Across All Demographics
+Issue:
+
+All categories show as "-10.0%" or "+3690.0%", which suggests:
+
+Actual values are 0%, and
+
+Target is hardcoded at 10% for every demographic
+
+Fix:
+
+Allow custom target values for each demographic (via UI or config file)
+
+If target data is present in the file, use that
+
+Default to reasonable, equity-driven values if nothing is provided:
+
+json
+Copy
+Edit
+{
+  "African American": 12,
+  "Asian": 5,
+  "Hispanic": 18,
+  "LGBT": 7,
+  ...
+}
+3. ❗ No Hover Tooltips or Data Context in Cells
+Issue:
+
+Stakeholders can't see actual values or context behind each % bar
+
+Fix:
+
+Add hover tooltips showing:
+
+Actual %
+
+Target %
+
+Raw Count (X out of Y)
+
+Module Name
+
+Example Tooltip:
+
+yaml
+Copy
+Edit
+Lesson: A Boat in the Wilderness
+Demographic: African American
+Actual: 2%
+Target: 12%
+Gap: -10%
+Total People: 186
+4. ❗ X-Axis Labels Are Cluttered and Unreadable
+Issue:
+
+The labels are too dense and overlapping, especially with "(10.0% target)" appended to each
+
+Fix:
+
+Use abbreviations or icons for demographics (e.g., AAM, AAF, LGBTF)
+
+Show full demographic + target % on hover or tooltip
+
+Rotate or wrap labels to improve readability
+
+5. ❗ Heat Map Legend Is Compressed and Unclear
+Issue:
+
+The legend on the right is stacked vertically and unreadable
+
+Fix:
+
+Move legend to the top or bottom
+
+Use a simple color scale bar:
+
+mathematica
+Copy
+Edit
+< - Under Target | On Target | Over Target >
+     Red         White        Green
+✅ Summary of Fixes Needed
+Problem Area	Fix Needed
+Non-demographic data graphed	Filter out non-demographic fields (e.g., Page Folio)
+Hardcoded target %	Load or allow input of per-demographic target %
+Unreadable X-axis	Rotate or abbreviate labels, show full name on hover
+No data on hover	Add rich tooltips with all relevant data
+Legend unreadable	Improve legend position and format
+
+🧩 Optional Enhancements
+Add sorting toggle: "Sort by Largest Gap", "Sort by Module Name", etc.
+
+Enable download of the heat map as image (PNG/PDF)
+
+Add "Hide demographics with 0 values" checkbox

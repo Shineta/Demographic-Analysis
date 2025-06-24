@@ -1,0 +1,61 @@
+✅ Fix Guide for GPT-4 API
+Goal:
+Refocus AI output from "recruitment/hiring" to "instructional content and curriculum representation."
+
+🔧 1. Update Your Prompt
+Old or generic prompt (likely causing HR-style output):
+json
+Copy
+Edit
+"Based on this demographic data, provide recommendations to improve equity and balance representation."
+✅ Refined Prompt:
+json
+Copy
+Edit
+"You are analyzing demographic representation within K–8 educational curriculum modules. Based on the data provided, identify which modules are underrepresenting key demographic groups (e.g., African American, Female, LGBT, etc.).
+
+Recommend specific **curriculum-level content updates** to better reflect those groups — such as revising characters, story settings, themes, illustrations, or vocabulary examples.
+
+Avoid HR-style language. Do not recommend hiring, recruiting, outreach, or employee training. This analysis applies strictly to instructional materials, not staffing or organizational policies."
+🧠 2. Use a System Message in Your Chat Setup (Optional, but helpful)
+Set a system message in your messages array to define the assistant’s domain:
+
+json
+Copy
+Edit
+{
+  "role": "system",
+  "content": "You are an education equity assistant helping align K–8 curriculum modules with demographic representation goals. Focus only on content (lessons, texts, visuals), not staffing or HR-related topics."
+}
+🧪 3. Sample GPT-4 API Payload (with fixed structure)
+json
+Copy
+Edit
+{
+  "model": "gpt-4",
+  "temperature": 0.7,
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an education equity assistant helping align K–8 curriculum modules with demographic representation goals. Focus only on content (lessons, texts, visuals), not staffing or HR-related topics."
+    },
+    {
+      "role": "user",
+      "content": "Based on the data below, identify underrepresented demographics in each module, and recommend instructional content changes (e.g., revising stories, adding more inclusive illustrations, updating themes).\n\n[Insert demographic gap table here]"
+    }
+  ]
+}
+✅ 4. Example Output (after applying the fix)
+Instead of:
+
+“Increase recruitment and outreach for Hispanic communities…”
+
+You get:
+
+“Lesson ‘Tomás and the Library Lady’ underrepresents Pacific Islander and LGBT characters. Consider revising the illustrations or adding a sidebar narrative that includes a Pacific Islander perspective. You could also introduce diverse family structures in related reading comprehension prompts.”
+
+📌 Bonus: Add a Visual Tag to Clarify the Source
+If you're showing this to the user in a UI, you can add a heading to clarify what type of analysis this is:
+
+“📘 Curriculum Representation Suggestions (Not HR Guidance)”
+

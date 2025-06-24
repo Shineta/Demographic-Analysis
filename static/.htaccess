@@ -1,0 +1,16 @@
+# Prevent social media crawlers from caching
+<IfModule mod_headers.c>
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
+    Header unset ETag
+    Header unset Last-Modified
+</IfModule>
+
+# Block social media crawlers
+RewriteEngine On
+RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|twitterbot|linkedinbot|discordbot|telegrambot|whatsappbot|slackbot|teamsbot) [NC]
+RewriteRule ^(.*)$ /static/nopreview.html [L]
+
+# Serve index.html for root requests
+DirectoryIndex index.html

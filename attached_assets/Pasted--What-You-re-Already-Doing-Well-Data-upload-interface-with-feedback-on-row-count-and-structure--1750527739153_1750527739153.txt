@@ -1,0 +1,103 @@
+✅ What You're Already Doing Well
+✔ Data upload interface with feedback on row count and structure
+✔ Demographic filters and EntityDesc selection
+✔ Heat map visualization exists
+✔ Demographic Gaps Analysis summary table is present
+✔ Target % comparison logic is included
+
+❌ What's Missing or Needs Fixing to Meet the Requirements
+1. ✅ Module Total Counts (Per EntityDesc)
+Problem:
+There is no summary table that shows the total number of people represented per module.
+
+Fix:
+Add a “Module Summary Table” below the heat map or in a new tab:
+
+plaintext
+Copy
+Edit
+| EntityDesc                        | Grade | Component     | Total People |
+|----------------------------------|--------|---------------|---------------|
+| Lesson, Ant's Grand Feast        | Gr. 1  | Read & Respond| 186           |
+| Lesson, Rosa Parks: My Story     | Gr. 4  | Read & Respond| 202           |
+This helps stakeholders quickly see which lessons have the most/least representation.
+
+2. 🎯 Demographic Heat Map Not Readable or Labeled Clearly
+Problem:
+
+The heat map is not clearly labeled with demographic category axes or cell values.
+
+It’s hard to tell what each row and column represents.
+
+Fixes:
+
+Label X-axis: Demographics (AAM, AAF, etc.)
+
+Label Y-axis: Module name (EntityDesc) or Grade + Module
+
+Use tooltips or on-hover labels to show:
+
+Actual %
+
+Target %
+
+Total count in that cell
+
+Optionally show a legend for color scale.
+
+3. 🎚️ Filter Controls Need Enhancements
+Problem:
+Grade and Component filtering is great, but they’re not tightly coupled to heat map logic.
+
+Fix:
+
+Ensure that filters apply to both the heat map and the demographic gap table.
+
+Allow toggling between:
+
+Heat Map View
+
+Gap Summary View
+
+Module Totals View
+
+4. 📊 Demographic Gap Table Is Underpowered
+Problem:
+The “Actual Count” and “Actual %” columns are mostly zeros, likely because filters are too narrow or data isn't parsed correctly.
+
+Fix:
+
+Validate that demographic columns are being read and summed properly
+
+Ensure that filters (especially EntityDesc) don’t unintentionally exclude data
+
+Show a message if filters return empty/no demographic hits
+
+5. 📤 No Export Features Yet
+Fix:
+Add export options:
+
+Export heat map as PNG/PDF
+
+Export module summary table as CSV
+
+Export gap analysis table as Excel or PDF
+
+6. 🧭 Guidance for Users
+Fix:
+
+Add a “How to Use” section or tooltip popovers
+
+Clarify what “Over Target” or “On Target” means
+
+Show default target values in a sidebar or allow admin customization
+
+📌 Final Checklist to Meet Requirements
+Feature	Status	Action Needed
+Upload report (.xlsx with EntityDesc)	✅ Working	—
+Filter by Grade, Component, EntityDesc	✅ Working	Improve linkage to heat map
+Generate heat map per module vs. targets	⚠️ Partial	Improve labels, hover data
+Show demographic gaps	✅ Working	Validate data accuracy
+Show total count per module (EntityDesc)	❌ Missing	Add summary table
+Export visuals/data	❌ Missing	Add export buttons
+Self-serve UX with helpful guidance	⚠️ Partial

@@ -1,0 +1,96 @@
+1. Add a "🩺 Data Health Checker"
+This component will inspect the uploaded dataset and issue warnings or confirmations before generating the heat map.
+
+🔧 JS/React Implementation
+jsx
+Copy
+Edit
+const demographicFields = [
+  "African American", "Asian", "Caucasian", "Female", "Hispanic",
+  "LGBT", "Legacy", "Male", "Native American", "Other",
+  "Pacific Islander", "Physically Challenged"
+];
+
+const runDataHealthCheck = (data) => {
+  const issues = [];
+
+  // Check for all-zero fields
+  demographicFields.forEach((field) => {
+    const total = data.reduce((sum, row) => sum + (Number(row[field]) || 0), 0);
+    if (total === 0) {
+      issues.push(`⚠️ All values for '${field}' are zero.`);
+    }
+  });
+
+  // Check if sum of demographics < Spec Count (missing attribution)
+  data.forEach((row, idx) => {
+    const demoSum = demographicFields.reduce((sum, field) => sum + (Number(row[field]) || 0), 0);
+    const specCount = Number(row["Spec Count"] || 0);
+    if (demoSum > specCount) {
+      issues.push(`❗ Row ${idx + 1}: Demographic sum exceeds Spec Count (${demoSum} > ${specCount})`);
+    } else if (demoSum < specCount) {
+      issues.push(`⚠️ Row ${idx + 1}: ${specCount - demoSum} entries unassigned to any demographic`);
+    }
+  });
+
+  return issues;
+};
+🔍 Display Results
+jsx
+Copy
+Edit
+const healthMessages = runDataHealthCheck(uploadedData);
+
+return (
+  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-400 text-yellow-800 rounded">
+    <h3 className="font-bold text-lg mb-2">🩺 Data Health Check</h3>
+    {healthMessages.length === 0 ? (
+      <p className="text-green-600">✅ No issues detected. Your data looks good!</p>
+    ) : (
+      <ul className="list-disc ml-6">
+        {healthMessages.map((msg, i) => (
+          <li key={i}>{msg}</li>
+        ))}
+      </ul>
+    )}
+  </div>
+);
+✅ 2. Fix the Upload Parser to Normalize & Validate on Import
+Ensure your parser:
+
+Normalizes column headers (.trim().toLowerCase().replace(/\s+/g, ''))
+
+Confirms required columns exist
+
+Maps normalized names back to user-friendly labels
+
+js
+Copy
+Edit
+const requiredCols = ["entitydesc", "grade", "spec count", ...demographicFields.map(d => d.toLowerCase().replace(/\s+/g, ''))];
+
+const validateColumns = (headers) => {
+  const normalized = headers.map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
+  const missing = requiredCols.filter(req => !normalized.includes(req));
+  return missing;
+};
+Display:
+
+jsx
+Copy
+Edit
+const missing = validateColumns(Object.keys(parsedData[0] || {}));
+if (missing.length > 0) {
+  return (
+    <div className="bg-red-100 border border-red-400 text-red-700 p-4 rounded">
+      <p>🚫 Missing required columns:</p>
+      <ul className="list-disc ml-6">{missing.map((col, i) => <li key={i}>{col}</li>)}</ul>
+    </div>
+  );
+}
+📌 Benefits
+Feature	Benefit
+Data Health Checker	Alerts user to silent data issues
+Parser Validation	Prevents invalid or misnamed columns
+Demographic-Spec Gap	Flags content with incomplete attribution
+
